@@ -1,0 +1,6 @@
+.env
+dist/vault
+node_modules
+Dockerfile
+.dockerignore
+package-lock.json
