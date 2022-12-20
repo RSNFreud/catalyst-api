@@ -97,7 +97,7 @@ var init = function () {
                     _a.sent();
                     console.log('Complete!');
                     client.end();
-                    // lastUpdate = new Date()
+                    lastUpdate = new Date();
                     res('');
                     return [3 /*break*/, 7];
                 case 6:

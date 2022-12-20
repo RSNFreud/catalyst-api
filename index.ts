@@ -28,7 +28,7 @@ const init = () => {
             await client.downloadDir("/playerSnapshots", filePath)
             console.log('Complete!');
             client.end()
-            // lastUpdate = new Date()
+            lastUpdate = new Date()
             res('')
         }
         catch (err) {
