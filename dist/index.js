@@ -68,51 +68,114 @@ var lastUpdate = new Date();
 var client = new Client();
 var init = function () {
     return new Promise(function (res, rej) { return __awaiter(void 0, void 0, void 0, function () {
-        var err_1;
-        return __generator(this, function (_a) {
-            switch (_a.label) {
+        var _a, err_1;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
                 case 0:
-                    if (!fs.existsSync(__dirname + '/vault')) return [3 /*break*/, 2];
-                    return [4 /*yield*/, fs.promises.rm(__dirname + '/vault', { recursive: true, force: true })];
-                case 1:
-                    _a.sent();
-                    _a.label = 2;
-                case 2:
-                    _a.trys.push([2, 6, , 7]);
+                    _b.trys.push([0, 8, , 9]);
                     return [4 /*yield*/, client.connect({
                             host: process.env.HOST,
                             port: parseInt(process.env.PORT),
                             username: process.env.USER,
                             password: process.env.PASSWORD,
                         })];
-                case 3:
-                    _a.sent();
-                    console.log('Creating folder...');
+                case 1:
+                    _b.sent();
+                    _b.label = 2;
+                case 2:
+                    _b.trys.push([2, 4, , 5]);
                     return [4 /*yield*/, fs.promises.mkdir(filePath)];
+                case 3:
+                    _b.sent();
+                    console.log('Creating folder...');
+                    return [3 /*break*/, 5];
                 case 4:
-                    _a.sent();
+                    _a = _b.sent();
+                    return [3 /*break*/, 5];
+                case 5:
                     console.log('Downloading player files...');
                     return [4 /*yield*/, client.downloadDir("/playerSnapshots", filePath)];
-                case 5:
-                    _a.sent();
+                case 6:
+                    _b.sent();
                     console.log('Complete!');
-                    client.end();
+                    return [4 /*yield*/, client.end()];
+                case 7:
+                    _b.sent();
                     lastUpdate = new Date();
                     res('');
-                    return [3 /*break*/, 7];
-                case 6:
-                    err_1 = _a.sent();
+                    return [3 /*break*/, 9];
+                case 8:
+                    err_1 = _b.sent();
                     console.log(err_1);
                     rej(err_1);
-                    return [3 /*break*/, 7];
-                case 7: return [2 /*return*/];
+                    return [3 /*break*/, 9];
+                case 9: return [2 /*return*/];
             }
         });
     }); });
 };
-setInterval(function () {
-    init();
-}, 3600000);
+var initSky = function () {
+    var skyPath = path_1.default.join(__dirname, 'sky_vaults');
+    return new Promise(function (res, rej) { return __awaiter(void 0, void 0, void 0, function () {
+        var _a, err_2;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0:
+                    _b.trys.push([0, 8, , 9]);
+                    return [4 /*yield*/, client.connect({
+                            host: process.env.HOST,
+                            port: parseInt(process.env.PORT),
+                            username: process.env.USER_SKY,
+                            password: process.env.PASSWORD,
+                        })];
+                case 1:
+                    _b.sent();
+                    _b.label = 2;
+                case 2:
+                    _b.trys.push([2, 4, , 5]);
+                    return [4 /*yield*/, fs.promises.mkdir(skyPath)];
+                case 3:
+                    _b.sent();
+                    console.log('Creating folder...');
+                    return [3 /*break*/, 5];
+                case 4:
+                    _a = _b.sent();
+                    return [3 /*break*/, 5];
+                case 5:
+                    console.log('Downloading player files...');
+                    return [4 /*yield*/, client.downloadDir("/playerSnapshots", skyPath)];
+                case 6:
+                    _b.sent();
+                    console.log('Complete!');
+                    return [4 /*yield*/, client.end()];
+                case 7:
+                    _b.sent();
+                    lastUpdate = new Date();
+                    res('');
+                    return [3 /*break*/, 9];
+                case 8:
+                    err_2 = _b.sent();
+                    console.log(err_2);
+                    rej(err_2);
+                    return [3 /*break*/, 9];
+                case 9: return [2 /*return*/];
+            }
+        });
+    }); });
+};
+setInterval(function () { return __awaiter(void 0, void 0, void 0, function () {
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, init()];
+            case 1:
+                _a.sent();
+                return [4 /*yield*/, initSky()];
+            case 2:
+                _a.sent();
+                return [2 /*return*/];
+        }
+    });
+}); }, 3600000);
 var fastify = require('fastify')();
 fastify.register(require('@fastify/cors'), {
 // put your options here
@@ -138,18 +201,42 @@ fastify.get("/api/snapshots", function (req, res) { return __awaiter(void 0, voi
         }
     });
 }); });
+fastify.get("/api/sky/snapshots", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
+    var data;
+    return __generator(this, function (_a) {
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, getSkyData()];
+            case 1:
+                data = _a.sent();
+                data.sort(function (_a, _b) {
+                    var aLevel = _a.vaultLevel;
+                    var bLevel = _b.vaultLevel;
+                    return +bLevel - +aLevel;
+                });
+                res.send(data);
+                return [2 /*return*/];
+        }
+    });
+}); });
 fastify.get("/api/refresh", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
-        init();
-        res.send('Refreshing data...');
-        return [2 /*return*/];
+        switch (_a.label) {
+            case 0: return [4 /*yield*/, init()];
+            case 1:
+                _a.sent();
+                return [4 /*yield*/, initSky()];
+            case 2:
+                _a.sent();
+                res.send('Refreshing data...');
+                return [2 /*return*/];
+        }
     });
 }); });
 var getData = function () {
     return new Promise(function (res, rej) { return __awaiter(void 0, void 0, void 0, function () {
         return __generator(this, function (_a) {
             fs.readdir(path_1.default.join(__dirname, 'vault'), function (err, files) { return __awaiter(void 0, void 0, void 0, function () {
-                var snapshots, i, fileName, data, json, err_2;
+                var snapshots, i, fileName, data, json, err_3;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
@@ -173,8 +260,52 @@ var getData = function () {
                             snapshots.push(json);
                             return [3 /*break*/, 5];
                         case 4:
-                            err_2 = _a.sent();
-                            console.log(err_2);
+                            err_3 = _a.sent();
+                            console.log(err_3);
+                            return [3 /*break*/, 5];
+                        case 5:
+                            i++;
+                            return [3 /*break*/, 1];
+                        case 6:
+                            res(snapshots);
+                            return [2 /*return*/];
+                    }
+                });
+            }); });
+            return [2 /*return*/];
+        });
+    }); });
+};
+var getSkyData = function () {
+    return new Promise(function (res, rej) { return __awaiter(void 0, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            fs.readdir(path_1.default.join(__dirname, 'sky_vaults'), function (err, files) { return __awaiter(void 0, void 0, void 0, function () {
+                var snapshots, i, fileName, data, json, err_4;
+                return __generator(this, function (_a) {
+                    switch (_a.label) {
+                        case 0:
+                            if (!files)
+                                return [2 /*return*/];
+                            snapshots = [];
+                            i = 0;
+                            _a.label = 1;
+                        case 1:
+                            if (!(i < files.length)) return [3 /*break*/, 6];
+                            fileName = files[i];
+                            if (fileName === "whitelist.json")
+                                return [3 /*break*/, 5];
+                            _a.label = 2;
+                        case 2:
+                            _a.trys.push([2, 4, , 5]);
+                            return [4 /*yield*/, fs.promises.readFile(path_1.default.join(__dirname, 'sky_vaults', fileName), 'utf8')];
+                        case 3:
+                            data = _a.sent();
+                            json = JSON.parse(data);
+                            snapshots.push(json);
+                            return [3 /*break*/, 5];
+                        case 4:
+                            err_4 = _a.sent();
+                            console.log(err_4);
                             return [3 /*break*/, 5];
                         case 5:
                             i++;
@@ -194,7 +325,7 @@ fastify.get("/api/last-update", function (req, res) {
 });
 // Run the server!
 var start = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var err_3;
+    var err_5;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -204,9 +335,9 @@ var start = function () { return __awaiter(void 0, void 0, void 0, function () {
                 _a.sent();
                 return [3 /*break*/, 3];
             case 2:
-                err_3 = _a.sent();
+                err_5 = _a.sent();
                 // console.log(err);
-                fastify.log.error(err_3);
+                fastify.log.error(err_5);
                 process.exit(1);
                 return [3 /*break*/, 3];
             case 3: return [2 /*return*/];

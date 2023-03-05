@@ -4,3 +4,4 @@ node_modules
 Dockerfile
 .dockerignore
 package-lock.json
+dist/*
