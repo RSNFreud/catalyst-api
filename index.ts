@@ -13,6 +13,7 @@ const init = () => {
         try {
             await client.connect({
                 host: process.env.HOST,
+                
                 port: parseInt(process.env.PORT),
                 username: process.env.USER,
                 password: process.env.PASSWORD,
@@ -36,39 +37,39 @@ const init = () => {
     })
 }
 
-const initSky = () => {
-    const skyPath = path.join(__dirname, 'sky_vaults')
+// const initSky = () => {
+//     const skyPath = path.join(__dirname, 'sky_vaults')
 
-    return new Promise(async (res, rej) => {
-        try {
-            await client.connect({
-                host: process.env.HOST,
-                port: parseInt(process.env.PORT),
-                username: process.env.USER_SKY,
-                password: process.env.PASSWORD,
-            })
+//     return new Promise(async (res, rej) => {
+//         try {
+//             await client.connect({
+//                 host: process.env.HOST,
+//                 port: parseInt(process.env.PORT),
+//                 username: process.env.USER_SKY,
+//                 password: process.env.PASSWORD,
+//             })
 
-            try {
-                await fs.promises.mkdir(skyPath)
-                console.log('Creating folder...');
-            } catch { }
-            console.log('Downloading player files...');
-            await client.downloadDir("/playerSnapshots", skyPath)
-            console.log('Complete!');
-            await client.end()
-            lastUpdate = new Date()
-            res('')
-        }
-        catch (err) {
-            console.log(err)
-            rej(err)
-        }
-    })
-}
+//             try {
+//                 await fs.promises.mkdir(skyPath)
+//                 console.log('Creating folder...');
+//             } catch { }
+//             console.log('Downloading player files...');
+//             await client.downloadDir("/playerSnapshots", skyPath)
+//             console.log('Complete!');
+//             await client.end()
+//             lastUpdate = new Date()
+//             res('')
+//         }
+//         catch (err) {
+//             console.log(err)
+//             rej(err)
+//         }
+//     })
+// }
 
 setInterval(async () => {
     await init()
-    await initSky()
+    // await initSky()
 }, 3600000)
 
 const fastify = require('fastify')()
@@ -98,7 +99,7 @@ fastify.get("/api/sky/snapshots", async (req, res) => {
 
 fastify.get("/api/refresh", async (req, res) => {
     await init()
-    await initSky()
+    // await initSky()
     res.send('Refreshing data...')
 });
 
