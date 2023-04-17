@@ -114,63 +114,40 @@ var init = function () {
         });
     }); });
 };
-var initSky = function () {
-    var skyPath = path_1.default.join(__dirname, 'sky_vaults');
-    return new Promise(function (res, rej) { return __awaiter(void 0, void 0, void 0, function () {
-        var _a, err_2;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
-                case 0:
-                    _b.trys.push([0, 8, , 9]);
-                    return [4 /*yield*/, client.connect({
-                            host: process.env.HOST,
-                            port: parseInt(process.env.PORT),
-                            username: process.env.USER_SKY,
-                            password: process.env.PASSWORD,
-                        })];
-                case 1:
-                    _b.sent();
-                    _b.label = 2;
-                case 2:
-                    _b.trys.push([2, 4, , 5]);
-                    return [4 /*yield*/, fs.promises.mkdir(skyPath)];
-                case 3:
-                    _b.sent();
-                    console.log('Creating folder...');
-                    return [3 /*break*/, 5];
-                case 4:
-                    _a = _b.sent();
-                    return [3 /*break*/, 5];
-                case 5:
-                    console.log('Downloading player files...');
-                    return [4 /*yield*/, client.downloadDir("/playerSnapshots", skyPath)];
-                case 6:
-                    _b.sent();
-                    console.log('Complete!');
-                    return [4 /*yield*/, client.end()];
-                case 7:
-                    _b.sent();
-                    lastUpdate = new Date();
-                    res('');
-                    return [3 /*break*/, 9];
-                case 8:
-                    err_2 = _b.sent();
-                    console.log(err_2);
-                    rej(err_2);
-                    return [3 /*break*/, 9];
-                case 9: return [2 /*return*/];
-            }
-        });
-    }); });
-};
+// const initSky = () => {
+//     const skyPath = path.join(__dirname, 'sky_vaults')
+//     return new Promise(async (res, rej) => {
+//         try {
+//             await client.connect({
+//                 host: process.env.HOST,
+//                 port: parseInt(process.env.PORT),
+//                 username: process.env.USER_SKY,
+//                 password: process.env.PASSWORD,
+//             })
+//             try {
+//                 await fs.promises.mkdir(skyPath)
+//                 console.log('Creating folder...');
+//             } catch { }
+//             console.log('Downloading player files...');
+//             await client.downloadDir("/playerSnapshots", skyPath)
+//             console.log('Complete!');
+//             await client.end()
+//             lastUpdate = new Date()
+//             res('')
+//         }
+//         catch (err) {
+//             console.log(err)
+//             rej(err)
+//         }
+//     })
+// }
 setInterval(function () { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, init()];
+            case 0: return [4 /*yield*/, init()
+                // await initSky()
+            ];
             case 1:
-                _a.sent();
-                return [4 /*yield*/, initSky()];
-            case 2:
                 _a.sent();
                 return [2 /*return*/];
         }
@@ -221,12 +198,12 @@ fastify.get("/api/sky/snapshots", function (req, res) { return __awaiter(void 0,
 fastify.get("/api/refresh", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, init()];
+            case 0: return [4 /*yield*/, init()
+                // await initSky()
+            ];
             case 1:
                 _a.sent();
-                return [4 /*yield*/, initSky()];
-            case 2:
-                _a.sent();
+                // await initSky()
                 res.send('Refreshing data...');
                 return [2 /*return*/];
         }
@@ -236,7 +213,7 @@ var getData = function () {
     return new Promise(function (res, rej) { return __awaiter(void 0, void 0, void 0, function () {
         return __generator(this, function (_a) {
             fs.readdir(path_1.default.join(__dirname, 'vault'), function (err, files) { return __awaiter(void 0, void 0, void 0, function () {
-                var snapshots, i, fileName, data, json, err_3;
+                var snapshots, i, fileName, data, json, err_2;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
@@ -260,8 +237,8 @@ var getData = function () {
                             snapshots.push(json);
                             return [3 /*break*/, 5];
                         case 4:
-                            err_3 = _a.sent();
-                            console.log(err_3);
+                            err_2 = _a.sent();
+                            console.log(err_2);
                             return [3 /*break*/, 5];
                         case 5:
                             i++;
@@ -280,7 +257,7 @@ var getSkyData = function () {
     return new Promise(function (res, rej) { return __awaiter(void 0, void 0, void 0, function () {
         return __generator(this, function (_a) {
             fs.readdir(path_1.default.join(__dirname, 'sky_vaults'), function (err, files) { return __awaiter(void 0, void 0, void 0, function () {
-                var snapshots, i, fileName, data, json, err_4;
+                var snapshots, i, fileName, data, json, err_3;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
@@ -304,8 +281,8 @@ var getSkyData = function () {
                             snapshots.push(json);
                             return [3 /*break*/, 5];
                         case 4:
-                            err_4 = _a.sent();
-                            console.log(err_4);
+                            err_3 = _a.sent();
+                            console.log(err_3);
                             return [3 /*break*/, 5];
                         case 5:
                             i++;
@@ -325,7 +302,7 @@ fastify.get("/api/last-update", function (req, res) {
 });
 // Run the server!
 var start = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var err_5;
+    var err_4;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -335,9 +312,9 @@ var start = function () { return __awaiter(void 0, void 0, void 0, function () {
                 _a.sent();
                 return [3 /*break*/, 3];
             case 2:
-                err_5 = _a.sent();
+                err_4 = _a.sent();
                 // console.log(err);
-                fastify.log.error(err_5);
+                fastify.log.error(err_4);
                 process.exit(1);
                 return [3 /*break*/, 3];
             case 3: return [2 /*return*/];
