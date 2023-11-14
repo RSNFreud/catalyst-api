@@ -1,7 +1,11 @@
 "use strict";
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
@@ -114,39 +118,10 @@ var init = function () {
         });
     }); });
 };
-// const initSky = () => {
-//     const skyPath = path.join(__dirname, 'sky_vaults')
-//     return new Promise(async (res, rej) => {
-//         try {
-//             await client.connect({
-//                 host: process.env.HOST,
-//                 port: parseInt(process.env.PORT),
-//                 username: process.env.USER_SKY,
-//                 password: process.env.PASSWORD,
-//             })
-//             try {
-//                 await fs.promises.mkdir(skyPath)
-//                 console.log('Creating folder...');
-//             } catch { }
-//             console.log('Downloading player files...');
-//             await client.downloadDir("/playerSnapshots", skyPath)
-//             console.log('Complete!');
-//             await client.end()
-//             lastUpdate = new Date()
-//             res('')
-//         }
-//         catch (err) {
-//             console.log(err)
-//             rej(err)
-//         }
-//     })
-// }
 setInterval(function () { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, init()
-                // await initSky()
-            ];
+            case 0: return [4 /*yield*/, init()];
             case 1:
                 _a.sent();
                 return [2 /*return*/];
@@ -178,32 +153,12 @@ fastify.get("/api/snapshots", function (req, res) { return __awaiter(void 0, voi
         }
     });
 }); });
-fastify.get("/api/sky/snapshots", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var data;
-    return __generator(this, function (_a) {
-        switch (_a.label) {
-            case 0: return [4 /*yield*/, getSkyData()];
-            case 1:
-                data = _a.sent();
-                data.sort(function (_a, _b) {
-                    var aLevel = _a.vaultLevel;
-                    var bLevel = _b.vaultLevel;
-                    return +bLevel - +aLevel;
-                });
-                res.send(data);
-                return [2 /*return*/];
-        }
-    });
-}); });
 fastify.get("/api/refresh", function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
     return __generator(this, function (_a) {
         switch (_a.label) {
-            case 0: return [4 /*yield*/, init()
-                // await initSky()
-            ];
+            case 0: return [4 /*yield*/, init()];
             case 1:
                 _a.sent();
-                // await initSky()
                 res.send('Refreshing data...');
                 return [2 /*return*/];
         }
@@ -253,56 +208,12 @@ var getData = function () {
         });
     }); });
 };
-var getSkyData = function () {
-    return new Promise(function (res, rej) { return __awaiter(void 0, void 0, void 0, function () {
-        return __generator(this, function (_a) {
-            fs.readdir(path_1.default.join(__dirname, 'sky_vaults'), function (err, files) { return __awaiter(void 0, void 0, void 0, function () {
-                var snapshots, i, fileName, data, json, err_3;
-                return __generator(this, function (_a) {
-                    switch (_a.label) {
-                        case 0:
-                            if (!files)
-                                return [2 /*return*/];
-                            snapshots = [];
-                            i = 0;
-                            _a.label = 1;
-                        case 1:
-                            if (!(i < files.length)) return [3 /*break*/, 6];
-                            fileName = files[i];
-                            if (fileName === "whitelist.json")
-                                return [3 /*break*/, 5];
-                            _a.label = 2;
-                        case 2:
-                            _a.trys.push([2, 4, , 5]);
-                            return [4 /*yield*/, fs.promises.readFile(path_1.default.join(__dirname, 'sky_vaults', fileName), 'utf8')];
-                        case 3:
-                            data = _a.sent();
-                            json = JSON.parse(data);
-                            snapshots.push(json);
-                            return [3 /*break*/, 5];
-                        case 4:
-                            err_3 = _a.sent();
-                            console.log(err_3);
-                            return [3 /*break*/, 5];
-                        case 5:
-                            i++;
-                            return [3 /*break*/, 1];
-                        case 6:
-                            res(snapshots);
-                            return [2 /*return*/];
-                    }
-                });
-            }); });
-            return [2 /*return*/];
-        });
-    }); });
-};
 fastify.get("/api/last-update", function (req, res) {
     res.send(lastUpdate.toUTCString());
 });
 // Run the server!
 var start = function () { return __awaiter(void 0, void 0, void 0, function () {
-    var err_4;
+    var err_3;
     return __generator(this, function (_a) {
         switch (_a.label) {
             case 0:
@@ -310,11 +221,12 @@ var start = function () { return __awaiter(void 0, void 0, void 0, function () {
                 return [4 /*yield*/, fastify.listen(4000)];
             case 1:
                 _a.sent();
+                init();
                 return [3 /*break*/, 3];
             case 2:
-                err_4 = _a.sent();
+                err_3 = _a.sent();
                 // console.log(err);
-                fastify.log.error(err_4);
+                fastify.log.error(err_3);
                 process.exit(1);
                 return [3 /*break*/, 3];
             case 3: return [2 /*return*/];
