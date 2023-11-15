@@ -97,7 +97,6 @@ fastify.get("/api/last-update", (req, res) => {
 const start = async () => {
     try {
         await fastify.listen(4000)
-        init()
     } catch (err) {
         // console.log(err);
 

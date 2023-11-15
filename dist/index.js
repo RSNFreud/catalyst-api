@@ -221,7 +221,6 @@ var start = function () { return __awaiter(void 0, void 0, void 0, function () {
                 return [4 /*yield*/, fastify.listen(4000)];
             case 1:
                 _a.sent();
-                init();
                 return [3 /*break*/, 3];
             case 2:
                 err_3 = _a.sent();
